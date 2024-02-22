@@ -1,0 +1,5 @@
+Course Name: chem
+Exam Weight: 0.25
+Homework Weight: 0.25
+Assignment Weight: 0.25
+Quiz Weight: 0.25
