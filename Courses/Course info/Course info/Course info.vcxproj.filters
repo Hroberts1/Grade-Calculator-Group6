@@ -21,9 +21,15 @@
     <ClCompile Include="course_info.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="assignment_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="course_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="assignment_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

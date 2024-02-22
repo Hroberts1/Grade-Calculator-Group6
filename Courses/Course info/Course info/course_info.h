@@ -1,11 +1,27 @@
-#ifndef COURSE_INFO_H
-#define COURSE_INFO_H
+#ifndef COURSEINFO_H
+#define COURSEINFO_H
 
 #include <string>
+#include <vector>
 #include <iostream>
 #include <fstream>
 
 using namespace std;
+
+
+class AssignmentData {
+public:
+    // Public properties
+    string assignmentName;
+    string assignmentType;
+    double grade;
+
+    // Public constructor
+    AssignmentData(const string& name, const string& type, double grade);
+
+    // Public destructor
+    ~AssignmentData();
+};
 
 class CourseInfo {
 public:
@@ -15,6 +31,9 @@ public:
     double homeworkWeight;
     double assignmentWeight;
     double quizWeight;
+
+    // Vector to hold AssignmentData objects
+    vector<AssignmentData> assignments;
 
     // Public constructor
     CourseInfo();
@@ -27,6 +46,9 @@ public:
 
     // Function to load data from a file
     void loadFromFile(const string& filename);
+
+    // Function to add assignment data
+    void addAssignment(const string& name, const string& type, double grade);
 };
 
-#endif // COURSE_INFO_H
+#endif // COURSEINFO_H

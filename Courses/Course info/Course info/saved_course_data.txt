@@ -1,5 +1,8 @@
-Course Name: chem
+Course Name: sdf
 Exam Weight: 0.25
 Homework Weight: 0.25
 Assignment Weight: 0.25
 Quiz Weight: 0.25
+Assignment Data:
+Assignment Name: hw1, Type: homework, Grade: 50
+Assignment Name: hw2, Type: homework, Grade: 100

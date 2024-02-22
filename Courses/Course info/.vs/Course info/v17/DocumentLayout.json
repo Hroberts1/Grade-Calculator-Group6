@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\course_info.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|solutionrelative:Course info\\course_info.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\courses_main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|solutionrelative:Course info\\courses_main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\assignment_data.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|solutionrelative:Course info\\assignment_data.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\course_info.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|solutionrelative:Course info\\course_info.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\courses_main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|solutionrelative:Course info\\courses_main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\course_info.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{AAE66FD9-737B-46FF-92B6-E71C344A0E32}|Course info\\Course info.vcxproj|solutionrelative:Course info\\course_info.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,43 +26,56 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
+              "Title": "assignment_data.h",
+              "DocumentMoniker": "C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\assignment_data.h",
+              "RelativeDocumentMoniker": "Course info\\assignment_data.h",
+              "ToolTip": "C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\assignment_data.h",
+              "RelativeToolTip": "Course info\\assignment_data.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-02-22T17:57:24.716Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "course_info.cpp",
               "DocumentMoniker": "C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\course_info.cpp",
               "RelativeDocumentMoniker": "Course info\\course_info.cpp",
               "ToolTip": "C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\course_info.cpp",
               "RelativeToolTip": "Course info\\course_info.cpp",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAAAgAAAAPAAAA",
+              "ViewState": "AQIAACoAAAAAAAAAAAAAAAEAAAARAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-02-22T17:29:59.851Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "course_info.h",
               "DocumentMoniker": "C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\course_info.h",
               "RelativeDocumentMoniker": "Course info\\course_info.h",
               "ToolTip": "C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\course_info.h",
               "RelativeToolTip": "Course info\\course_info.h",
-              "ViewState": "AQIAABIAAAAAAAAAAAAAAB4AAAAAAAAA",
+              "ViewState": "AQIAABIAAAAAAAAAAAAwwDMAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-02-22T17:19:29.628Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "courses_main.cpp",
               "DocumentMoniker": "C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\courses_main.cpp",
               "RelativeDocumentMoniker": "Course info\\courses_main.cpp",
               "ToolTip": "C:\\Users\\HRobe\\Desktop\\Grade calculator project\\Courses\\Course info\\Course info\\courses_main.cpp",
               "RelativeToolTip": "Course info\\courses_main.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAA0AAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAEAAAALAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-02-22T17:19:13.604Z",
               "EditorCaption": ""
