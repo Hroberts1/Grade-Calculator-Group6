@@ -4,3 +4,7 @@
 *.db-shm
 *.db-wal
 *.opendb
+.vs/Grade-Calculator-Group6/v17/.wsuo
+.vs/slnx.sqlite
+Course_data/.vs/Course_data/v17/ipch/AutoPCH/982c359a3b924013/COURSE_DATA.ipch
+Course_data/.vs/Course_data/v17/.suo
