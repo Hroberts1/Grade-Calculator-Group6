@@ -1,91 +1,67 @@
+#include <iostream>
+#include <vector>
 #include "course_info.h"
-#include <sstream>
 
-using namespace std;
-// Constructor definition
-CourseInfo::CourseInfo() {
-    // Prompt the user for input
-    cout << "Enter the course name: ";
-    getline(cin, courseName);
+int main() {
+    std::vector<CourseInfo> courses;
 
-    cout << "Enter the weight for exams: ";
-    cin >> examWeight;
+    char addAnotherCourse;
+    do {
+        CourseInfo course;
 
-    cout << "Enter the weight for homeworks: ";
-    cin >> homeworkWeight;
+        // Prompt the user to input assignment data
+        char addAnotherAssignment;
+        do {
+            std::string assignmentName, assignmentType;
+            double grade;
 
-    cout << "Enter the weight for assignments: ";
-    cin >> assignmentWeight;
+            std::cout << "\nEnter assignment name: ";
+            std::cin >> std::ws; // Clear the input buffer
+            std::getline(std::cin, assignmentName);
 
-    cout << "Enter the weight for quizzes: ";
-    cin >> quizWeight;
+            std::cout << "Enter assignment type: ";
+            std::cin >> assignmentType;
 
-    // Ensure the weights add up to 1 (or 100%)
-    double totalWeight = examWeight + homeworkWeight + assignmentWeight + quizWeight;
-    if (totalWeight != 1.0) {
-        cerr << "Error: The total weight must add up to 1.0 (or 100%)." << endl;
-        // You can handle this error however you want, e.g., set default values or exit the program
-    }
+            std::cout << "Enter grade: ";
+            std::cin >> grade;
 
-    cin.ignore(); // Ignore newline character after entering the last weight
-}
+            // Add the assignment data to the CourseInfo object
+            course.addAssignment(assignmentName, assignmentType, grade);
 
-// Destructor definition
-CourseInfo::~CourseInfo() {}
+            std::cout << "\nDo you want to add another assignment? (y/n): ";
+            std::cin >> addAnotherAssignment;
+        } while (addAnotherAssignment == 'y' || addAnotherAssignment == 'Y');
 
-// Function to save data to a file
-void CourseInfo::saveToFile(const string& filename) {
-    ofstream file(filename);
+        courses.push_back(course);
+
+        std::cout << "\nDo you want to add another course? (y/n): ";
+        std::cin >> addAnotherCourse;
+    } while ((addAnotherCourse == 'y' || addAnotherCourse == 'Y') && courses.size() < 7); // Maximum 7 courses
+
+    // Save data to file
+    std::ofstream file("saved_course_data.txt");
     if (file.is_open()) {
-        file << "Course Name: " << courseName << endl;
-        file << "Exam Weight: " << examWeight << endl;
-        file << "Homework Weight: " << homeworkWeight << endl;
-        file << "Assignment Weight: " << assignmentWeight << endl;
-        file << "Quiz Weight: " << quizWeight << endl;
+        for (const auto& course : courses) {
+            file << "Course Name: " << course.courseName << std::endl;
+            file << "Exam Weight: " << course.examWeight << std::endl;
+            file << "Homework Weight: " << course.homeworkWeight << std::endl;
+            file << "Assignment Weight: " << course.assignmentWeight << std::endl;
+            file << "Quiz Weight: " << course.quizWeight << std::endl;
 
-        file << "Assignment Data:" << endl;
-        for (const auto& assignment : assignments) {
-            file << "Assignment Name: " << assignment.assignmentName << ", ";
-            file << "Type: " << assignment.assignmentType << ", ";
-            file << "Grade: " << assignment.grade << endl;
-        }
-
-        file.close();
-        cout << "Data saved to file: " << filename << endl;
-    }
-    else {
-        cerr << "Unable to open file: " << filename << endl;
-    }
-}
-
-// Function to load data from a file
-void CourseInfo::loadFromFile(const string& filename) {
-    ifstream file(filename);
-    if (file.is_open()) {
-        string line;
-        while (getline(file, line)) {
-            if (line.substr(0, 13) == "Assignment Name:") {
-                string name, type;
-                double grade;
-                istringstream iss(line);
-                iss.ignore(17); // Ignore "Assignment Name: "
-                getline(iss, name, ',');
-                iss.ignore(7); // Ignore ", Type: "
-                getline(iss, type, ',');
-                iss.ignore(8); // Ignore ", Grade: "
-                iss >> grade;
-                assignments.push_back(AssignmentData(name, type, grade));
+            file << "Assignment Data:" << std::endl;
+            for (const auto& assignment : course.assignments) {
+                file << "Assignment Name: " << assignment.assignmentName << ", ";
+                file << "Type: " << assignment.assignmentType << ", ";
+                file << "Grade: " << assignment.grade << std::endl;
             }
+            file << std::endl; // Add a newline between courses
         }
         file.close();
-        cout << "Data loaded from file: " << filename << endl;
+        std::cout << "\nData saved to file: saved_course_data.txt" << std::endl;
     }
     else {
-        cerr << "Unable to open file: " << filename << endl;
+        std::cerr << "Unable to open file: saved_course_data.txt" << std::endl;
     }
-}
 
-// Function to add assignment data
-void CourseInfo::addAssignment(const string& name, const string& type, double grade) {
-    assignments.push_back(AssignmentData(name, type, grade));
+    return 0;
 }
