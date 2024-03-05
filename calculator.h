@@ -1,16 +1,16 @@
 #ifndef CALCULATOR_H
 #define CALCULATOR_H
-#include "course_info.h"
+#include "course_inf.h"
 using namespace std;
 
-double calcAvg(CourseInfo c);
+double calcAvg(course_inf c);
 
-double calcNeededQuizAvg(double grade, CourseInfo c, int totquiznum);
+double calcNeededQuizAvg(double grade, course_inf c);
 
-double calcNeededExamAvg(double grade, CourseInfo c, int totexamnum);
+double calcNeededExamAvg(double grade, course_inf c);
 
-double calcNeededHomeworkAvg(double grade, CourseInfo c, int tothomeworknum);
+double calcNeededHomeworkAvg(double grade, course_inf c);
 
-double calcNeededAssignmentAvg(double grade, CourseInfo c, int totassignmentnum);
+double calcNeededAssignmentAvg(double grade, course_inf c);
 
 #endif 
