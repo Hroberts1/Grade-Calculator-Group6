@@ -1,0 +1,7 @@
+Course Name: phs
+Exam Weight: 10
+Project Weight: 10
+Quiz Weight: 10
+Homework Weight: 10
+Assignment Weight: 10
+
