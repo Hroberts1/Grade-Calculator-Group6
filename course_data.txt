@@ -1,7 +1,42 @@
-Course Name: phs
-Exam Weight: 10
-Project Weight: 10
-Quiz Weight: 10
-Homework Weight: 10
-Assignment Weight: 10
+Course Name: phys
+Exam Weight: 0
+Project Weight: 0
+Quiz Weight: 0
+Homework Weight: 0
+Assignment Weight: 0
+
+Course Name: asdas
+Exam Weight: 0
+Project Weight: 0
+Quiz Weight: 0
+Homework Weight: 0
+Assignment Weight: 0
+
+Course Name: physics
+Exam Weight: 15
+Project Weight: 0
+Quiz Weight: 0
+Homework Weight: 0
+Assignment Weight: 0
+
+Course Name: phys
+Exam Weight: 0
+Project Weight: 0
+Quiz Weight: 0
+Homework Weight: 0
+Assignment Weight: 0
+
+Course Name: phys
+Exam Weight: 0
+Project Weight: 0
+Quiz Weight: 0
+Homework Weight: 0
+Assignment Weight: 0
+
+Course Name: chem
+Exam Weight: 0
+Project Weight: 0
+Quiz Weight: 0
+Homework Weight: 0
+Assignment Weight: 0
 

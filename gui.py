@@ -1,5 +1,4 @@
 import tkinter as tk
-import json
 
 courses = []
 
@@ -75,77 +74,53 @@ def create_add_course_popup():
     back_button.grid(row=7, column=0, columnspan=2, padx=10, pady=10)
 
 def update_main_menu():
-    # Clear existing buttons from main menu
-    #for button in root.grid_slaves():
-     #   button.grid_forget()
-
-        # Create buttons for each course in the list
     for i, course in enumerate(courses):
-        # Create a frame to hold the course button and its menu
         frame = tk.Frame(root)
         frame.grid(row=i+1, column=0, padx=10, pady=5)
 
-        # Create the course button
-        course_button = tk.Button(frame, text=course["course_name"], command=lambda c=course: on_course_button_click(c))
+        course_button = tk.Button(frame, text=course["course_name"], command=lambda c=course: on_course_button_click(root, c))
         course_button.grid(row=0, column=0)
 
-        # Create the menu for the course button
-        course_menu = tk.Menu(frame, tearoff=0)
-        course_menu.add_command(label="View Course", command=lambda c=course: view_course(c))
-        course_menu.add_command(label="Add Assignment", command=lambda c=course: add_assignment(c))
-        course_menu.add_command(label="Delete Assignment", command=lambda c=course: delete_assignment(c))
-        course_menu.add_separator()
-        course_menu.add_command(label="Delete Course", command=lambda c=course: delete_course(c))
-        course_menu.add_command(label="Back", command=lambda c=course: back())
-        
-        # Attach the menu to the course button
-        course_button.bind("<Button-3>", lambda event, menu=course_menu: menu.post(event.x_root, event.y_root))
-
-def on_course_button_click(course):
+def on_course_button_click(root, course):
     # This function will be called when a course button is clicked
     print("Course button clicked:", course)
 
-def view_course(course):
-    print("View course:", course)
+    # Create a new window to display the menu options
+    course_menu_window = tk.Toplevel(root)
+    course_menu_window.title(f"Menu for {course['course_name']}")
 
+    # Add menu items or any other content here
+    add_assignment_button = tk.Button(course_menu_window, text="Add Assignment", command=lambda: add_assignment(course))
+    add_assignment_button.pack()
+
+    view_assignments_button = tk.Button(course_menu_window, text="View Assignments", command=lambda: view_assignments(course))
+    view_assignments_button.pack()
+
+    edit_assignment_button = tk.Button(course_menu_window, text="Edit/Remove Assignment", command=lambda: edit_assignment(course))
+    edit_assignment_button.pack()
+
+    get_grade_button = tk.Button(course_menu_window, text="Get Desired Grade", command=lambda: get_desired_grade(course))
+    get_grade_button.pack()
+
+# You can define functions for the menu actions here
 def add_assignment(course):
-    print("Add assignment:", course)
+    print("Adding assignment for course:", course)
 
-def delete_assignment(course):
-    print("Delete assignment:", course)
+def view_assignments(course):
+    print("Viewing assignments for course:", course)
 
-def delete_course(course):
-    print("Delete course:", course)
+def edit_assignment(course):
+    print("Editing/Removing assignment for course:", course)
 
-def back():
-    print("Back")
-
-# Create the main application window
-root = tk.Tk()
-root.title("My GUI Application")
-
-# Set the window size to 750x750 pixels
-root.geometry("750x750")
-
-# Create a button widget with a square shape
-button = tk.Button(root, text="Add Course", command=on_button_click, width=10, height=2)
-button.grid(row=0, column=0, padx=10, pady=5)
-
-# Run the Tkinter event loop
-root.mainloop()
-
-def on_course_button_click(course):
-    # This function will be called when a course button is clicked
-    print("Course button clicked:", course)
+def get_desired_grade(course):
+    print("Getting desired grade for course:", course)
 
 # Create the main application window
 root = tk.Tk()
 root.title("Grade Calculator Application")
 root.geometry("750x750")
 
-# Create a button widget with a square shape
 button = tk.Button(root, text="Add Course", command=on_button_click, width=10, height=2)
 button.grid(row=0, column=0, padx=10, pady=5)
 
-# Run the Tkinter event loop
 root.mainloop()

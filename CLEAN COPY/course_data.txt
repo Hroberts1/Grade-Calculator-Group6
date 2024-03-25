@@ -1,0 +1,7 @@
+Course Name: phys
+Exam Weight: 0
+Project Weight: 0
+Quiz Weight: 0
+Homework Weight: 0
+Assignment Weight: 0
+
