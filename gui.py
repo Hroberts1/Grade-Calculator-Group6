@@ -57,6 +57,7 @@ def create_add_course_popup():
         update_main_menu() #new course button
 
         #write to txt file
+        #will be taken care of in the back end
         with open("course_data.txt","a") as file:
             file.write("Course Name: " + course_data['course_name'] + "\n")
             file.write("Exam Weight: " + course_data['exam_weight'] + "\n")
