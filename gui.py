@@ -1,4 +1,5 @@
 import tkinter as tk
+import os
 
 courses = []
 
@@ -57,7 +58,8 @@ def create_add_course_popup():
         update_main_menu() #new course button
 
         #write to txt file
-        with open("course_data.txt","a") as file:
+        filename = f"{course_data['course_name'].replace(' ', '_')}_data.txt"
+        with open(filename, "w") as file:
             file.write("Course Name: " + course_data['course_name'] + "\n")
             file.write("Exam Weight: " + course_data['exam_weight'] + "\n")
             file.write("Project Weight: " + course_data['project_weight'] + "\n")
@@ -90,7 +92,7 @@ def on_course_button_click(root, course):
     course_menu_window.title(f"Menu for {course['course_name']}")
 
     # Add menu items or any other content here
-    add_assignment_button = tk.Button(course_menu_window, text="Add Assignment", command=lambda: add_assignment(course))
+    add_assignment_button = tk.Button(course_menu_window, text="Add Assignment", command=lambda: create_add_assignment_popup(course))
     add_assignment_button.pack()
 
     view_assignments_button = tk.Button(course_menu_window, text="View Assignments", command=lambda: view_assignments(course))
@@ -102,24 +104,82 @@ def on_course_button_click(root, course):
     get_grade_button = tk.Button(course_menu_window, text="Get Desired Grade", command=lambda: get_desired_grade(course))
     get_grade_button.pack()
 
-# You can define functions for the menu actions here
-def add_assignment(course):
-    print("Adding assignment for course:", course)
+def create_add_assignment_popup(course):
+    # Create the pop-up window
+    popup = tk.Toplevel()
+    popup.title("Add Assignment")
 
+    # Create labels and entry widgets for assignment details
+    assignment_name_label = tk.Label(popup, text="Assignment Name:")
+    assignment_name_label.grid(row=0, column=0, padx=10, pady=5)
+    assignment_name_entry = tk.Entry(popup)
+    assignment_name_entry.grid(row=0, column=1, padx=10, pady=5)
+
+    grade_value_label = tk.Label(popup, text="Grade Value:")
+    grade_value_label.grid(row=1, column=0, padx=10, pady=5)
+    grade_value_entry = tk.Entry(popup)
+    grade_value_entry.grid(row=1, column=1, padx=10, pady=5)
+
+    # Dropdown menu for weight types
+    weight_type_label = tk.Label(popup, text="Weight Type:")
+    weight_type_label.grid(row=2, column=0, padx=10, pady=5)
+    weight_types = ["Exam", "Project", "Quiz", "Homework", "Assignment"]
+    weight_type_var = tk.StringVar()
+    weight_type_var.set(weight_types[0])  # Default value
+    weight_type_dropdown = tk.OptionMenu(popup, weight_type_var, *weight_types)
+    weight_type_dropdown.grid(row=2, column=1, padx=10, pady=5)
+
+    # Function to handle the submit button click
+    def submit_assignment():
+        assignment_data = {
+            "assignment_name": assignment_name_entry.get(),
+            "grade_value": grade_value_entry.get(),
+            "weight_type": weight_type_var.get(),
+        }
+        # Write assignment data to the course's text file
+        with open(f"{course['course_name'].replace(' ', '_')}_data.txt", "a") as file:
+            file.write("Assignment Name: " + assignment_data['assignment_name'] + "\n")
+            file.write("Grade Value: " + assignment_data['grade_value'] + "\n")
+            file.write("Weight Type: " + assignment_data['weight_type'] + "\n\n")
+        popup.destroy()
+
+    # Create and place the submit button
+    submit_button = tk.Button(popup, text="Submit", command=submit_assignment)
+    submit_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+
+    # Create and place the back button
+    back_button = tk.Button(popup, text="Back", command=popup.destroy)
+    back_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+
+def read_course_files():
+    # Read each course file and display its contents
+    for filename in os.listdir():
+        if filename.endswith("_data.txt"):
+            course_name = filename.replace('_data.txt', '').replace('_', ' ')
+            courses.append({"course_name": course_name})
+
+# Placeholder functions for menu actions
 def view_assignments(course):
-    print("Viewing assignments for course:", course)
+    pass
 
 def edit_assignment(course):
-    print("Editing/Removing assignment for course:", course)
+    pass
 
 def get_desired_grade(course):
-    print("Getting desired grade for course:", course)
+    pass
+
+# Read course files on program start
+read_course_files()
 
 # Create the main application window
 root = tk.Tk()
 root.title("Grade Calculator Application")
 root.geometry("750x750")
 
+# Add course buttons
+update_main_menu()
+
+# Add Course button
 button = tk.Button(root, text="Add Course", command=on_button_click, width=10, height=2)
 button.grid(row=0, column=0, padx=10, pady=5)
 
