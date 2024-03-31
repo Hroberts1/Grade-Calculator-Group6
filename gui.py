@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as messagebox
 import os
 
 courses = []
@@ -190,7 +191,82 @@ def view_assignments(course):
 
 
 def edit_assignment(course):
-    pass
+    # Create a new window for editing assignments
+    edit_window = tk.Toplevel()
+    edit_window.title(f"Edit Assignments for {course['course_name']}")
+
+    # Read the course's data file
+    filename = f"{course['course_name'].replace(' ', '_')}_data.txt"
+    try:
+        with open(filename, "r") as file:
+            assignments_data = file.readlines()
+    except FileNotFoundError:
+        # If the file is not found, simply destroy the window
+        edit_window.destroy()
+        return
+
+    # Function to handle selection of a checkbox
+    def select_checkbox(checkbox):
+        for chk in checkboxes:
+            if chk != checkbox:
+                chk.deselect()
+
+    # Create checkboxes for each assignment
+    checkboxes = []
+    for assignment_info in assignments_data:
+        assignment_name = assignment_info.split(":")[1].strip()
+        checkbox = tk.Checkbutton(edit_window, text=assignment_name, command=lambda chk=checkbox: select_checkbox(chk))
+        checkboxes.append(checkbox)
+        checkbox.pack()
+
+    # Function to handle editing the selected assignment
+    def edit_selected():
+        selected_index = -1
+        for index, chk in enumerate(checkboxes):
+            if chk.instate(['selected']):
+                if selected_index != -1:
+                    # If more than one checkbox is selected, return without performing any action
+                    return
+                selected_index = index
+
+        if selected_index != -1:
+            selected_assignment_info = assignments_data[selected_index]
+            assignment_name = selected_assignment_info.split(":")[1].strip()
+
+            # Implement your logic for editing the selected assignment here
+            print(f"Editing assignment: {assignment_name}")
+        else:
+            # If no checkbox is selected, return without performing any action
+            return
+
+    # Function to handle deleting the selected assignment
+    def delete_selected():
+        selected_index = -1
+        for index, chk in enumerate(checkboxes):
+            if chk.instate(['selected']):
+                if selected_index != -1:
+                    # If more than one checkbox is selected, return without performing any action
+                    return
+                selected_index = index
+
+        if selected_index != -1:
+            if messagebox.askyesno("Confirmation", "Are you sure you want to delete this assignment?"):
+                del assignments_data[selected_index]
+                with open(filename, "w") as file:
+                    file.writelines(assignments_data)
+        else:
+            # If no checkbox is selected, return without performing any action
+            return
+
+    # Create buttons for editing and deleting assignments
+    edit_button = tk.Button(edit_window, text="Edit", command=edit_selected)
+    edit_button.pack()
+
+    delete_button = tk.Button(edit_window, text="Delete", command=delete_selected)
+    delete_button.pack()
+
+    back_button = tk.Button(edit_window, text="Back", command=edit_window.destroy)
+    back_button.pack()
 
 def get_desired_grade(course):
     pass
