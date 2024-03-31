@@ -160,7 +160,34 @@ def read_course_files():
 
 # Placeholder functions for menu actions
 def view_assignments(course):
-    pass
+    # Create a new window to display assignments
+    assignments_window = tk.Toplevel()
+    assignments_window.title(f"Assignments for {course['course_name']}")
+
+    # Read the course's data file
+    filename = f"{course['course_name'].replace(' ', '_')}_data.txt"
+    try:
+        with open(filename, "r") as file:
+            assignments_data = file.readlines()
+    except FileNotFoundError:
+        # If the file is not found, display a message and return
+        no_assignments_label = tk.Label(assignments_window, text="No assignments found.")
+        no_assignments_label.pack()
+        return
+
+    # Display assignments if there are any
+    if assignments_data:
+        assignments_label = tk.Label(assignments_window, text="Assignments:")
+        assignments_label.pack()
+
+        for assignment_info in assignments_data:
+            assignment_label = tk.Label(assignments_window, text=assignment_info.strip())
+            assignment_label.pack()
+    else:
+        # If no assignments found, display a message
+        no_assignments_label = tk.Label(assignments_window, text="No assignments found.")
+        no_assignments_label.pack()
+
 
 def edit_assignment(course):
     pass
