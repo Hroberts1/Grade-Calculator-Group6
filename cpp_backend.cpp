@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 
+
 // Function to process the course data passed from Python
 void processCourseData(const std::string& courseName, const std::string& examWeight,
                        const std::string& projectWeight, const std::string& quizWeight,

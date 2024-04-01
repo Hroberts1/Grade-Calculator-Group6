@@ -1,0 +1,15 @@
+Course Name: physics
+Exam Weight: 40
+Project Weight: 20
+Quiz Weight: 10
+Homework Weight: 15
+Assignment Weight: 15
+
+Assignment Name: Exam 1
+Grade Value: 72
+Weight Type: Exam
+
+Assignment Name: Chapter 1 HW
+Grade Value: 100
+Weight Type: Homework
+
