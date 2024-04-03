@@ -35,9 +35,9 @@ def create_needed_grade_popup():
     exam_average.grid(row=3, column=1, padx=10, pady=5)
 
     class_label = tk.Label(popup, text="Class Average:")
-    class_label.grid(row=3, column=0, padx=10, pady=5)
+    class_label.grid(row=4, column=0, padx=10, pady=5)
     class_average = tk.Label(popup, text="92")
-    class_average.grid(row=3, column=1, padx=10, pady=5)
+    class_average.grid(row=4, column=1, padx=10, pady=5)
 
     # Create and place the back button
     back_button = tk.Button(popup, text="Back", command=popup.destroy)
