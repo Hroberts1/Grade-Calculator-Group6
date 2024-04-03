@@ -14,17 +14,17 @@ def create_needed_grade_popup():
     popup = tk.Toplevel()
 
     # Create labels and entry widgets for course name and weights
-    grade_label = tk.Label(popup, text="Grade You Want to Get:")
+    grade_label = tk.Label(popup, text="Grade You Want to Get (Ex: 75,89,95):")
     grade_label.grid(row=0, column=0, padx=10, pady=5)
     grade_entry = tk.Entry(popup)
     grade_entry.grid(row=0, column=1, padx=10, pady=5)
 
-    type_label = tk.Label(popup, text="Grade Type to Focus On:")
+    type_label = tk.Label(popup, text="Grade Type to Focus On (Ex:Exam, HW, quiz):")
     type_label.grid(row=1, column=0, padx=10, pady=5)
     type_entry = tk.Entry(popup)
     type_entry.grid(row=1, column=1, padx=10, pady=5)
 
-    num_remain_label = tk.Label(popup, text="Number Remaining:")
+    num_remain_label = tk.Label(popup, text="Number Remaining(EX: 1 exam remaining):")
     num_remain_label.grid(row=2, column=0, padx=10, pady=5)
     num_remain_entry = tk.Entry(popup)
     num_remain_entry.grid(row=2, column=1, padx=10, pady=5)
