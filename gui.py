@@ -1,6 +1,8 @@
 import tkinter as tk
+from tkinter import ttk
 import tkinter.messagebox as messagebox
 import os
+import sqlite3
 
 courses = []
 
@@ -56,17 +58,30 @@ def create_add_course_popup():
             "assignment_weight": assignment_weight_entry.get()
         }
         courses.append(course_data)
-        update_main_menu() #new course button
+        update_main_menu()
 
-        #write to txt file
-        filename = f"{course_data['course_name'].replace(' ', '_')}_data.txt"
-        with open(filename, "w") as file:
-            file.write("Course Name: " + course_data['course_name'] + "\n")
-            file.write("Exam Weight: " + course_data['exam_weight'] + "\n")
-            file.write("Project Weight: " + course_data['project_weight'] + "\n")
-            file.write("Quiz Weight: " + course_data['quiz_weight'] + "\n")
-            file.write("Homework Weight: " + course_data['homework_weight'] + "\n")
-            file.write("Assignment Weight: " + course_data['assignment_weight'] + "\n\n")
+        # Create directory for course and database for assignments
+        create_course_directory(course_data['course_name'])
+
+        # Write course data to the course's database
+        course_db = sqlite3.connect(os.path.join(course_data['course_name'].replace(' ', '_'), f"{course_data['course_name'].replace(' ', '_')}_info.db"))
+        course_cursor = course_db.cursor()
+
+        course_cursor.execute('''CREATE TABLE IF NOT EXISTS course_info
+                                (course_name TEXT, exam_weight TEXT, project_weight TEXT,
+                                quiz_weight TEXT, homework_weight TEXT, assignment_weight TEXT)''')
+
+        course_cursor.execute('''INSERT INTO course_info
+                                (course_name, exam_weight, project_weight, quiz_weight,
+                                homework_weight, assignment_weight)
+                                VALUES (?, ?, ?, ?, ?, ?)''',
+                                (course_data['course_name'], course_data['exam_weight'], course_data['project_weight'],
+                                course_data['quiz_weight'], course_data['homework_weight'], course_data['assignment_weight']))
+
+        course_db.commit()
+        course_db.close()
+
+        popup.destroy()
 
     # Create and place the submit button
     submit_button = tk.Button(popup, text="Submit", command=submit_course)
@@ -99,11 +114,14 @@ def on_course_button_click(root, course):
     view_assignments_button = tk.Button(course_menu_window, text="View Assignments", command=lambda: view_assignments(course))
     view_assignments_button.pack()
 
-    edit_assignment_button = tk.Button(course_menu_window, text="Edit/Remove Assignment", command=lambda: edit_assignment(course))
-    edit_assignment_button.pack()
+   # get_grade_button = tk.Button(course_menu_window, text="Get Desired Grade", command=lambda: get_desired_grade(course))
+   #get_grade_button.pack()
 
-    get_grade_button = tk.Button(course_menu_window, text="Get Desired Grade", command=lambda: get_desired_grade(course))
-    get_grade_button.pack()
+def create_course_directory(course_name):
+    # Create directory for the course if it doesn't exist
+    directory_name = course_name.replace(' ', '_')
+    if not os.path.exists(directory_name):
+        os.makedirs(directory_name)
 
 def create_add_assignment_popup(course):
     # Create the pop-up window
@@ -137,11 +155,22 @@ def create_add_assignment_popup(course):
             "grade_value": grade_value_entry.get(),
             "weight_type": weight_type_var.get(),
         }
-        # Write assignment data to the course's text file
-        with open(f"{course['course_name'].replace(' ', '_')}_data.txt", "a") as file:
-            file.write("Assignment Name: " + assignment_data['assignment_name'] + "\n")
-            file.write("Grade Value: " + assignment_data['grade_value'] + "\n")
-            file.write("Weight Type: " + assignment_data['weight_type'] + "\n\n")
+        # Write assignment data to the course's database
+        assignment_db = sqlite3.connect(os.path.join(course['course_name'].replace(' ', '_'), f"{course['course_name'].replace(' ', '_')}_assignments.db"))
+        assignment_cursor = assignment_db.cursor()
+
+        assignment_cursor.execute('''CREATE TABLE IF NOT EXISTS assignments
+                                    (assignment_number INTEGER PRIMARY KEY, assignment_type TEXT,
+                                    assignment_name TEXT, assignment_grade TEXT)''')
+
+        assignment_cursor.execute('''INSERT INTO assignments
+                                    (assignment_type, assignment_name, assignment_grade)
+                                    VALUES (?, ?, ?)''',
+                                    (assignment_data['weight_type'], assignment_data['assignment_name'], assignment_data['grade_value']))
+
+        assignment_db.commit()
+        assignment_db.close()
+
         popup.destroy()
 
     # Create and place the submit button
@@ -152,124 +181,109 @@ def create_add_assignment_popup(course):
     back_button = tk.Button(popup, text="Back", command=popup.destroy)
     back_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
-def read_course_files():
-    # Read each course file and display its contents
-    for filename in os.listdir():
-        if filename.endswith("_data.txt"):
-            course_name = filename.replace('_data.txt', '').replace('_', ' ')
-            courses.append({"course_name": course_name})
-
-# Placeholder functions for menu actions
 def view_assignments(course):
     # Create a new window to display assignments
     assignments_window = tk.Toplevel()
     assignments_window.title(f"Assignments for {course['course_name']}")
 
-    # Read the course's data file
-    filename = f"{course['course_name'].replace(' ', '_')}_data.txt"
-    try:
-        with open(filename, "r") as file:
-            assignments_data = file.readlines()
-    except FileNotFoundError:
-        # If the file is not found, display a message and return
-        no_assignments_label = tk.Label(assignments_window, text="No assignments found.")
-        no_assignments_label.pack()
-        return
+    # Create a Treeview widget to display assignments as a table
+    assignments_tree = ttk.Treeview(assignments_window, columns=("Type", "Assignment Name", "Grade"), show="headings")
+    assignments_tree.heading("Type", text="Type")
+    assignments_tree.heading("Assignment Name", text="Assignment Name")
+    assignments_tree.heading("Grade", text="Grade")
+    assignments_tree.pack(fill=tk.BOTH, expand=True)
 
-    # Display assignments if there are any
-    if assignments_data:
-        assignments_label = tk.Label(assignments_window, text="Assignments:")
-        assignments_label.pack()
+    # Retrieve assignments from the database
+    course_directory = course['course_name'].replace(' ', '_')
+    assignments_db_path = os.path.join(course_directory, f"{course_directory}_assignments.db")
+    if os.path.exists(assignments_db_path):
+        assignments_db = sqlite3.connect(assignments_db_path)
+        assignments_cursor = assignments_db.cursor()
 
-        for assignment_info in assignments_data:
-            assignment_label = tk.Label(assignments_window, text=assignment_info.strip())
-            assignment_label.pack()
+        # Fetch assignments from the database
+        assignments_cursor.execute('''SELECT * FROM assignments''')
+        assignments = assignments_cursor.fetchall()
+
+        # Display assignments in the Treeview widget
+        for assignment in assignments:
+            assignments_tree.insert("", "end", values=(assignment[1], assignment[2], assignment[3]))
+
+        # Close the database connection
+        assignments_db.close()
     else:
-        # If no assignments found, display a message
         no_assignments_label = tk.Label(assignments_window, text="No assignments found.")
         no_assignments_label.pack()
 
+    # Create buttons for Edit, Delete, and Back
+    edit_button = tk.Button(assignments_window, text="Edit", command=lambda: edit_assignment(assignments_tree))
+    edit_button.pack(side=tk.LEFT, padx=10, pady=10)
 
-def edit_assignment(course):
-    # Create a new window for editing assignments
-    edit_window = tk.Toplevel()
-    edit_window.title(f"Edit Assignments for {course['course_name']}")
+    delete_button = tk.Button(assignments_window, text="Delete", command=lambda: delete_assignment(assignments_tree))
+    delete_button.pack(side=tk.LEFT, padx=10, pady=10)
 
-    # Read the course's data file
-    filename = f"{course['course_name'].replace(' ', '_')}_data.txt"
-    try:
-        with open(filename, "r") as file:
-            assignments_data = file.readlines()
-    except FileNotFoundError:
-        # If the file is not found, simply destroy the window
-        edit_window.destroy()
-        return
+    back_button = tk.Button(assignments_window, text="Back", command=assignments_window.destroy)
+    back_button.pack(side=tk.LEFT, padx=10, pady=10)
 
-    # Function to handle selection of a checkbox
-    def select_checkbox(checkbox):
-        for chk in checkboxes:
-            if chk != checkbox:
-                chk.deselect()
+def edit_assignment(assignments_tree):
+    # Get the selected item from the Treeview widget
+    selected_item = assignments_tree.focus()
 
-    # Create checkboxes for each assignment
-    checkboxes = []
-    for assignment_info in assignments_data:
-        assignment_name = assignment_info.split(":")[1].strip()
-        checkbox = tk.Checkbutton(edit_window, text=assignment_name, command=lambda chk=checkbox: select_checkbox(chk))
-        checkboxes.append(checkbox)
-        checkbox.pack()
+    if selected_item:
+        # Retrieve the assignment details from the selected item
+        assignment_details = assignments_tree.item(selected_item, "values")
+        assignment_name = assignment_details[1]
+        assignment_grade = assignment_details[2]
 
-    # Function to handle editing the selected assignment
-    def edit_selected():
-        selected_index = -1
-        for index, chk in enumerate(checkboxes):
-            if chk.instate(['selected']):
-                if selected_index != -1:
-                    # If more than one checkbox is selected, return without performing any action
-                    return
-                selected_index = index
+        # Create the pop-up window for editing the assignment
+        edit_popup = tk.Toplevel()
+        edit_popup.title("Edit Assignment")
 
-        if selected_index != -1:
-            selected_assignment_info = assignments_data[selected_index]
-            assignment_name = selected_assignment_info.split(":")[1].strip()
+        # Create labels and entry widgets for assignment details
+        assignment_name_label = tk.Label(edit_popup, text="Assignment Name:")
+        assignment_name_label.grid(row=0, column=0, padx=10, pady=5)
+        assignment_name_entry = tk.Entry(edit_popup)
+        assignment_name_entry.insert(0, assignment_name)  # Populate with current assignment name
+        assignment_name_entry.grid(row=0, column=1, padx=10, pady=5)
 
-            # Implement your logic for editing the selected assignment here
-            print(f"Editing assignment: {assignment_name}")
-        else:
-            # If no checkbox is selected, return without performing any action
-            return
+        grade_value_label = tk.Label(edit_popup, text="Grade Value:")
+        grade_value_label.grid(row=1, column=0, padx=10, pady=5)
+        grade_value_entry = tk.Entry(edit_popup)
+        grade_value_entry.insert(0, assignment_grade)  # Populate with current assignment grade
+        grade_value_entry.grid(row=1, column=1, padx=10, pady=5)
 
-    # Function to handle deleting the selected assignment
-    def delete_selected():
-        selected_index = -1
-        for index, chk in enumerate(checkboxes):
-            if chk.instate(['selected']):
-                if selected_index != -1:
-                    # If more than one checkbox is selected, return without performing any action
-                    return
-                selected_index = index
+        # Function to handle the submit button click
+        def submit_edit():
+            new_assignment_name = assignment_name_entry.get()
+            new_assignment_grade = grade_value_entry.get()
 
-        if selected_index != -1:
-            if messagebox.askyesno("Confirmation", "Are you sure you want to delete this assignment?"):
-                del assignments_data[selected_index]
-                with open(filename, "w") as file:
-                    file.writelines(assignments_data)
-        else:
-            # If no checkbox is selected, return without performing any action
-            return
+            # Update the assignment details in the Treeview widget
+            assignments_tree.item(selected_item, values=(assignment_details[0], new_assignment_name, new_assignment_grade))
 
-    # Create buttons for editing and deleting assignments
-    edit_button = tk.Button(edit_window, text="Edit", command=edit_selected)
-    edit_button.pack()
+            # Close the pop-up window
+            edit_popup.destroy()
 
-    delete_button = tk.Button(edit_window, text="Delete", command=delete_selected)
-    delete_button.pack()
+        # Create and place the submit button
+        submit_button = tk.Button(edit_popup, text="Submit", command=submit_edit)
+        submit_button.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+    else:
+        messagebox.showerror("Error", "No assignment selected for editing.")
 
-    back_button = tk.Button(edit_window, text="Back", command=edit_window.destroy)
-    back_button.pack()
+def delete_assignment(assignments_tree):
+    # Get the selected item from the Treeview widget
+    selected_item = assignments_tree.focus()
 
-def get_desired_grade(course):
-    pass
+    if selected_item:
+        # Delete the selected item from the Treeview widget
+        assignments_tree.delete(selected_item)
+    else:
+        messagebox.showerror("Error", "No assignment selected for deletion.")
+
+def read_course_files():
+    # Read each course file and display its contents
+    for filename in os.listdir():
+        if filename.endswith("_info.db"):
+            course_name = filename.replace('_info.db', '').replace('_', ' ')
+            courses.append({"course_name": course_name})
 
 # Read course files on program start
 read_course_files()
