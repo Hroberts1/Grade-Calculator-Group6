@@ -1,39 +1,41 @@
-import tkinter as tk
-from tkinter import ttk
 import sqlite3
 
-def calculate_overall_grade(course_name, course_weights):
-    # Your existing code for calculating the overall grade
+def calc_avg(course_name, average_type):
+    # Connect to the database
+    conn = sqlite3.connect(f"{course_name.replace(' ', '_')}_assignments.db")
+    cursor = conn.cursor()
 
-    def show_course_grade_and_assignments(course_name):
-    # Create a new tkinter window
-        course_window = tk.Toplevel()
-        course_window.title(f"Course Grade and Assignments - {course_name}")
+    # Execute the SQL query to fetch assignment grades
+    cursor.execute("SELECT assignment_type, assignment_grade FROM assignments")
+    fetched_assignments = cursor.fetchall()
 
-    # Fetch course weights
-        course_weights = {'exam_weight': 40, 'project_weight': 20, 'quiz_weight': 10, 'homework_weight': 15, 'assignment_weight': 15}  # Example weights, you need to fetch these from somewhere
-    
-    # Calculate overall grade
-        overall_grade = calculate_overall_grade(course_name, course_weights)
+    # Process the fetched assignments and calculate the average
+    total_grade = 0
+    total_weight = 0
+    for assignment_type, assignment_grade in fetched_assignments:
+        if assignment_type.lower() == average_type.lower():
+            total_grade += float(assignment_grade)
+            total_weight += get_assignment_weight(course_name, assignment_type)
 
-    # Create label to display overall grade
-        grade_label = tk.Label(course_window, text=f"The overall grade for {course_name} is: {overall_grade:.2f}")
-        grade_label.pack()
+    # Close the database connection
+    conn.close()
 
-    # Create a treeview to display assignments
-        assignments_tree = ttk.Treeview(course_window, columns=("Type", "Assignment Name", "Grade"), show="headings")
-        assignments_tree.heading("Type", text="Type")
-        assignments_tree.heading("Assignment Name", text="Assignment Name")
-        assignments_tree.heading("Grade", text="Grade")
-        assignments_tree.pack()
+    # Avoid division by zero
+    if total_weight != 0:
+        return total_grade / total_weight
+    else:
+        return None
 
-    # Populate the assignments tree
-        db_file = f"{course_name.replace(' ', '_')}/{course_name.replace(' ', '_')}_assignments.db"
-        conn = sqlite3.connect(db_file)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM assignments")
-        assignments = cursor.fetchall()
-        for assignment in assignments:
-            assignments_tree.insert("", "end", values=assignment[1:])
+def get_assignment_weight(course_name, assignment_type):
+    # Connect to the database
+    conn = sqlite3.connect(f"{course_name.replace(' ', '_')}_info.db")
+    cursor = conn.cursor()
 
-        conn.close()
+    # Execute the SQL query to fetch the weight for the given assignment type
+    cursor.execute("SELECT {}_weight FROM course_info".format(assignment_type.lower()))
+    weight = cursor.fetchone()[0]
+
+    # Close the database connection
+    conn.close()
+
+    return float(weight)

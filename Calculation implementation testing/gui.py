@@ -3,24 +3,33 @@ from tkinter import ttk
 import tkinter.messagebox as messagebox
 import os
 import sqlite3
-import importlib
 import calculations
-importlib.reload(calculations)
-from calculations import calculate_overall_grade
-from calculations import show_course_grade_and_assignments
-
 
 
 courses = []
 
-def fetch_courses_from_db():
-    for root, dirs, files in os.walk("."):
-        for filename in files:
-            if filename.endswith("_info.db"):
-                course_name = filename.replace('_info.db', '').replace('_', ' ')
-                courses.append({"course_name": course_name})
+# Function to create the COURSES directory if it doesn't exist
+def create_courses_directory():
+    if not os.path.exists("COURSES"):
+        os.makedirs("COURSES")
 
-fetch_courses_from_db()
+# Call the function to create the COURSES directory
+create_courses_directory()
+
+# Function to create a new course directory within the COURSES directory
+def create_course_directory(course_name):
+    course_directory = os.path.join("COURSES", course_name.replace(' ', '_'))
+    os.makedirs(course_directory, exist_ok=True)
+
+
+def fetch_courses_from_db():
+    conn = sqlite3.connect("your_database_file.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM courses")
+    courses = cursor.fetchall()
+    conn.close()
+    return courses
+
 
 def on_button_click():
     create_add_course_popup()
@@ -102,9 +111,6 @@ def create_add_course_popup():
     back_button = tk.Button(popup, text="Back", command=popup.destroy)
     back_button.grid(row=7, column=0, columnspan=2, padx=10, pady=10)
 
-def on_calculate_grade_click(course_name):
-    show_course_grade_and_assignments(course_name)
-
 def update_main_menu():
     for i, course in enumerate(courses):
         frame = tk.Frame(root)
@@ -123,10 +129,15 @@ def on_course_button_click(root, course):
     view_assignments_button = tk.Button(course_menu_window, text="View Assignments", command=lambda: view_assignments(course))
     view_assignments_button.pack()
 
-    calculate_grade_button = tk.Button(course_menu_window, text="Calculate Grade", command=lambda: on_calculate_grade_click(course["course_name"]))
+    calculate_grade_button = tk.Button(course_menu_window, text="Calculate Grade", command=lambda: calculate_grade(course))
     calculate_grade_button.pack()
 
-    
+def calculate_grade(course):
+    average_type = "class"  # You can change this to calculate different types of averages
+    average_grade = calculations.calc_avg(course['course_name'], average_type)
+    messagebox.showinfo("Average Grade", f"The average grade for {course['course_name']} is: {average_grade}")
+
+
 def create_add_assignment_popup(course):
     popup = tk.Toplevel()
     popup.title("Add Assignment")
