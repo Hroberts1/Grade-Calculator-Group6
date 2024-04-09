@@ -4,6 +4,7 @@ import tkinter.messagebox as messagebox
 import os
 import sqlite3
 
+
 courses = []
 
 def fetch_courses_from_db():
