@@ -1,0 +1,7 @@
+Course Name: physics
+Exam Weight: 40
+Project Weight: 20
+Quiz Weight: 10
+Homework Weight: 15
+Assignment Weight: 15
+
