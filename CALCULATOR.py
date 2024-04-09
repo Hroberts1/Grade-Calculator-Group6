@@ -1,6 +1,6 @@
 from COURSE_INF import CourseInf, AssignmentInf
 
-def calc_avg(c):
+def calc_avg(c, average_type):
     quiz_avg = 0
     exam_avg = 0
     homework_avg = 0
@@ -31,7 +31,17 @@ def calc_avg(c):
 
     total_avg = (quiz_avg * c.quizWeight + exam_avg * c.examWeight +
                  homework_avg * c.homeworkWeight + assignment_avg * c.assignmentWeight)
-    return total_avg
+    
+    if average_type == "quiz":
+        return quiz_avg
+    elif average_type == "assignment":
+        return assignment_avg
+    elif average_type == "exam":
+        return exam_avg
+    elif average_type == "homework":
+        return homework_avg
+    elif average_type == "class":
+        return total_avg
 
 
 def calc_needed_quiz_avg(grade, c):
