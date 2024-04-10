@@ -113,7 +113,7 @@ def on_course_button_click(root, course):
     view_assignments_button = tk.Button(course_menu_window, text="View Assignments", command=lambda: view_assignments(course))
     view_assignments_button.pack()
 
-    calculate_grade_button = tk.Button(course_menu_window, text="Calculate Average Grade", command=lambda: calculate_grade(course))
+    calculate_grade_button = tk.Button(course_menu_window, text="Calculate Grade", command=lambda: calculate_grade(course))
     calculate_grade_button.pack()
 
 def create_add_assignment_popup(course):
