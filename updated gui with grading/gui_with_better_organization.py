@@ -17,6 +17,18 @@ def fetch_courses_from_db():
 
 fetch_courses_from_db()
 
+def calculate_letter_grade(exact_grade):
+    if 90 <= exact_grade <= 100:
+        return "A"
+    elif 80 <= exact_grade < 90:
+        return "B"
+    elif 70 <= exact_grade < 80:
+        return "C"
+    elif 60 <= exact_grade < 70:
+        return "D"
+    else:
+        return "F"
+
 def on_button_click():
     create_add_course_popup()
 
@@ -113,7 +125,7 @@ def on_course_button_click(root, course):
     view_assignments_button = tk.Button(course_menu_window, text="View Assignments", command=lambda: view_assignments(course))
     view_assignments_button.pack()
 
-    calculate_grade_button = tk.Button(course_menu_window, text="Calculate Average Grade", command=lambda: calculate_grade(course))
+    calculate_grade_button = tk.Button(course_menu_window, text="Calculate Grade", command=lambda: calculate_grade(course))
     calculate_grade_button.pack()
 
 def create_add_assignment_popup(course):
@@ -259,8 +271,8 @@ def delete_assignment(course, assignments_tree):
 
 def calculate_grade(course):
     exact_grade = calculate_exact_grade(course['course_name'])
-    messagebox.showinfo("Exact Grade", f"The exact grade for {course['course_name']} is {exact_grade:.2f}")
-
+    letter_grade = calculate_letter_grade(exact_grade)
+    messagebox.showinfo("Grade Information", f"Exact Grade: {exact_grade:.2f}\nLetter Grade: {letter_grade}")
 
 root = tk.Tk()
 root.title("Grade Calculator Application")
