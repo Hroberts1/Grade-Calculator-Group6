@@ -37,19 +37,9 @@ def get_weight_by_type(course_name, assignment_type):
 
     with sqlite3.connect(course_info_db_path) as conn:
         cursor = conn.cursor()
-        # Ensure that the column name is properly formatted to avoid SQL injection
-        column_name = f"{assignment_type.lower()}_weight"
-        if not column_name.isidentifier():  # Simple check to help prevent SQL injection
-            return None
-
-        cursor.execute('''SELECT {} FROM course_info'''.format(column_name))
+        cursor.execute('''SELECT {} FROM course_info'''.format(assignment_type.lower() + '_weight'))
         weight = cursor.fetchone()
         if weight:
-            # Ensure the weight is an integer
-            try:
-                return int(weight[0])
-            except ValueError:
-                return None  # In case the weight is not an integer
+            return float(weight[0].strip('%'))
         else:
             return None
-

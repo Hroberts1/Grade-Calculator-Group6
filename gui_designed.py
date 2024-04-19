@@ -18,7 +18,7 @@ def fetch_courses_from_db():
 fetch_courses_from_db()
 
 def calculate_letter_grade(exact_grade):
-    if 90 <= exact_grade:
+    if 90 <= exact_grade <= 100:
         return "A"
     elif 80 <= exact_grade < 90:
         return "B"
@@ -36,6 +36,19 @@ def create_add_course_popup():
     popup = tk.Toplevel()
     popup.title("Add Course")
 
+    # Function to validate integer input
+    def validate_integer(input_str):
+        if input_str == "":
+            return True  # Allow empty string
+        try:
+            int(input_str)
+            return True
+        except ValueError:
+            return False
+
+    # Validate and accept only integers for grade weights
+    validate_int_cmd = popup.register(validate_integer)
+
     course_name_label = tk.Label(popup, text="Course Name:")
     course_name_label.grid(row=0, column=0, padx=10, pady=5)
     course_name_entry = tk.Entry(popup)
@@ -43,27 +56,27 @@ def create_add_course_popup():
 
     exam_weight_label = tk.Label(popup, text="Exam Weight (Ex: 40%):")
     exam_weight_label.grid(row=1, column=0, padx=10, pady=5)
-    exam_weight_entry = tk.Entry(popup)
+    exam_weight_entry = tk.Entry(popup, validate="key", validatecommand=(validate_int_cmd, '%P'))
     exam_weight_entry.grid(row=1, column=1, padx=10, pady=5)
 
     project_weight_label = tk.Label(popup, text="Project Weight (Ex: 20%):")
     project_weight_label.grid(row=2, column=0, padx=10, pady=5)
-    project_weight_entry = tk.Entry(popup)
+    project_weight_entry = tk.Entry(popup, validate="key", validatecommand=(validate_int_cmd, '%P'))
     project_weight_entry.grid(row=2, column=1, padx=10, pady=5)
 
     quiz_weight_label = tk.Label(popup, text="Quiz Weight (Ex: 10%):")
     quiz_weight_label.grid(row=3, column=0, padx=10, pady=5)
-    quiz_weight_entry = tk.Entry(popup)
+    quiz_weight_entry = tk.Entry(popup, validate="key", validatecommand=(validate_int_cmd, '%P'))
     quiz_weight_entry.grid(row=3, column=1, padx=10, pady=5)
 
     homework_weight_label = tk.Label(popup, text="Homework Weight (Ex: 15%):")
     homework_weight_label.grid(row=4, column=0, padx=10, pady=5)
-    homework_weight_entry = tk.Entry(popup)
+    homework_weight_entry = tk.Entry(popup, validate="key", validatecommand=(validate_int_cmd, '%P'))
     homework_weight_entry.grid(row=4, column=1, padx=10, pady=5)
 
     assignment_weight_label = tk.Label(popup, text="Assignment Weight (Ex: 15%):")
     assignment_weight_label.grid(row=5, column=0, padx=10, pady=5)
-    assignment_weight_entry = tk.Entry(popup)
+    assignment_weight_entry = tk.Entry(popup, validate="key", validatecommand=(validate_int_cmd, '%P'))
     assignment_weight_entry.grid(row=5, column=1, padx=10, pady=5)
 
     def submit_course():
@@ -160,6 +173,19 @@ def create_add_assignment_popup(course):
     popup = tk.Toplevel()
     popup.title("Add Assignment")
 
+    # Function to validate integer or decimal input
+    def validate_number(input_str):
+        if input_str == "":
+            return True  # Allow empty string
+        try:
+            float(input_str)
+            return True
+        except ValueError:
+            return False
+
+    # Validate and accept integers or decimals for grade values
+    validate_number_cmd = popup.register(validate_number)
+
     assignment_name_label = tk.Label(popup, text="Assignment Name:")
     assignment_name_label.grid(row=0, column=0, padx=10, pady=5)
     assignment_name_entry = tk.Entry(popup)
@@ -167,7 +193,7 @@ def create_add_assignment_popup(course):
 
     grade_value_label = tk.Label(popup, text="Grade Value:")
     grade_value_label.grid(row=1, column=0, padx=10, pady=5)
-    grade_value_entry = tk.Entry(popup)
+    grade_value_entry = tk.Entry(popup, validate="key", validatecommand=(validate_number_cmd, '%P'))
     grade_value_entry.grid(row=1, column=1, padx=10, pady=5)
 
     weight_type_label = tk.Label(popup, text="Weight Type:")
