@@ -46,40 +46,80 @@ def create_add_course_popup():
         except ValueError:
             return False
 
+    # Function to validate non-empty input
+    def validate_non_empty(input_str):
+        return len(input_str.strip()) > 0
+
     # Validate and accept only integers for grade weights
     validate_int_cmd = popup.register(validate_integer)
+    validate_non_empty_cmd = popup.register(validate_non_empty)
 
     course_name_label = tk.Label(popup, text="Course Name:")
     course_name_label.grid(row=0, column=0, padx=10, pady=5)
-    course_name_entry = tk.Entry(popup)
+    course_name_entry = tk.Entry(popup, validate="key", validatecommand=(validate_non_empty_cmd, '%P'))
     course_name_entry.grid(row=0, column=1, padx=10, pady=5)
+
+    # Add a label to indicate the name is required
+    course_name_required_label = tk.Label(popup, text="(Required)", fg="red")
+    course_name_required_label.grid(row=0, column=2, padx=5, pady=5)
 
     exam_weight_label = tk.Label(popup, text="Exam Weight (Ex: 40%):")
     exam_weight_label.grid(row=1, column=0, padx=10, pady=5)
     exam_weight_entry = tk.Entry(popup, validate="key", validatecommand=(validate_int_cmd, '%P'))
     exam_weight_entry.grid(row=1, column=1, padx=10, pady=5)
 
+    # Add a label to indicate the weight is required
+    exam_weight_required_label = tk.Label(popup, text="(Required)", fg="red")
+    exam_weight_required_label.grid(row=1, column=2, padx=5, pady=5)
+
     project_weight_label = tk.Label(popup, text="Project Weight (Ex: 20%):")
     project_weight_label.grid(row=2, column=0, padx=10, pady=5)
     project_weight_entry = tk.Entry(popup, validate="key", validatecommand=(validate_int_cmd, '%P'))
     project_weight_entry.grid(row=2, column=1, padx=10, pady=5)
+
+    # Add a label to indicate the weight is required
+    project_weight_required_label = tk.Label(popup, text="(Required)", fg="red")
+    project_weight_required_label.grid(row=2, column=2, padx=5, pady=5)
 
     quiz_weight_label = tk.Label(popup, text="Quiz Weight (Ex: 10%):")
     quiz_weight_label.grid(row=3, column=0, padx=10, pady=5)
     quiz_weight_entry = tk.Entry(popup, validate="key", validatecommand=(validate_int_cmd, '%P'))
     quiz_weight_entry.grid(row=3, column=1, padx=10, pady=5)
 
+    # Add a label to indicate the weight is required
+    quiz_weight_required_label = tk.Label(popup, text="(Required)", fg="red")
+    quiz_weight_required_label.grid(row=3, column=2, padx=5, pady=5)
+
     homework_weight_label = tk.Label(popup, text="Homework Weight (Ex: 15%):")
     homework_weight_label.grid(row=4, column=0, padx=10, pady=5)
     homework_weight_entry = tk.Entry(popup, validate="key", validatecommand=(validate_int_cmd, '%P'))
     homework_weight_entry.grid(row=4, column=1, padx=10, pady=5)
+
+    # Add a label to indicate the weight is required
+    homework_weight_required_label = tk.Label(popup, text="(Required)", fg="red")
+    homework_weight_required_label.grid(row=4, column=2, padx=5, pady=5)
 
     assignment_weight_label = tk.Label(popup, text="Assignment Weight (Ex: 15%):")
     assignment_weight_label.grid(row=5, column=0, padx=10, pady=5)
     assignment_weight_entry = tk.Entry(popup, validate="key", validatecommand=(validate_int_cmd, '%P'))
     assignment_weight_entry.grid(row=5, column=1, padx=10, pady=5)
 
+    # Add a label to indicate the weight is required
+    assignment_weight_required_label = tk.Label(popup, text="(Required)", fg="red")
+    assignment_weight_required_label.grid(row=5, column=2, padx=5, pady=5)
+
     def submit_course():
+        # Check if all grade weight fields are filled
+        if not all([
+            validate_non_empty(course_name_entry.get()),
+            validate_non_empty(exam_weight_entry.get()),
+            validate_non_empty(project_weight_entry.get()),
+            validate_non_empty(quiz_weight_entry.get()),
+            validate_non_empty(homework_weight_entry.get()),
+            validate_non_empty(assignment_weight_entry.get())
+        ]):
+            messagebox.showerror("Error", "Please fill out all required fields.")
+            return
         course_data = {
             "course_name": course_name_entry.get(),
             "exam_weight": exam_weight_entry.get(),
