@@ -18,7 +18,7 @@ def fetch_courses_from_db():
 fetch_courses_from_db()
 
 def calculate_letter_grade(exact_grade):
-    if 90 <= exact_grade <= 100:
+    if 90 <= exact_grade:
         return "A"
     elif 80 <= exact_grade < 90:
         return "B"
@@ -101,10 +101,10 @@ def create_add_course_popup():
 
         popup.destroy()
 
-    submit_button = tk.Button(popup, text="Submit", command=submit_course)
+    submit_button = ttk.Button(popup, text="Submit", command=submit_course, style='TButton')
     submit_button.grid(row=6, column=0, columnspan=2, padx=10, pady=10)
 
-    back_button = tk.Button(popup, text="Back", command=popup.destroy)
+    back_button = ttk.Button(popup, text="Back", command=popup.destroy, style='TButton')
     back_button.grid(row=7, column=0, columnspan=2, padx=10, pady=10)
 
 def update_main_menu():
@@ -112,21 +112,49 @@ def update_main_menu():
         frame = tk.Frame(root)
         frame.grid(row=i+1, column=0, padx=10, pady=5)
 
-        course_button = tk.Button(frame, text=course["course_name"], command=lambda c=course: on_course_button_click(root, c))
+        course_button = ttk.Button(frame, text=course["course_name"], command=lambda c=course: on_course_button_click(root, c), style='TButton')
         course_button.grid(row=0, column=0)
 
 def on_course_button_click(root, course):
     course_menu_window = tk.Toplevel(root)
     course_menu_window.title(f"Menu for {course['course_name']}")
 
-    add_assignment_button = tk.Button(course_menu_window, text="Add Assignment", command=lambda: create_add_assignment_popup(course))
+    view_course_info_button = ttk.Button(course_menu_window, text="View Course Info", command=lambda: view_course_info(course), style='TButton')
+    view_course_info_button.pack()
+
+    add_assignment_button = ttk.Button(course_menu_window, text="Add Assignment", command=lambda: create_add_assignment_popup(course), style='TButton')
     add_assignment_button.pack()
 
-    view_assignments_button = tk.Button(course_menu_window, text="View Assignments", command=lambda: view_assignments(course))
+    view_assignments_button = ttk.Button(course_menu_window, text="View Assignments", command=lambda: view_assignments(course), style='TButton')
     view_assignments_button.pack()
 
-    calculate_grade_button = tk.Button(course_menu_window, text="Calculate Grade", command=lambda: calculate_grade(course))
+    calculate_grade_button = ttk.Button(course_menu_window, text="Calculate Grade", command=lambda: calculate_grade(course), style='TButton')
     calculate_grade_button.pack()
+
+def view_course_info(course):
+    course_info_window = tk.Toplevel()
+    course_info_window.title(f"Course Information for {course['course_name']}")
+
+    course_info_tree = ttk.Treeview(course_info_window, columns=("Property", "Value"), show="headings")
+    course_info_tree.heading("Property", text="Property")
+    course_info_tree.heading("Value", text="Value")
+    course_info_tree.pack(fill=tk.BOTH, expand=True)
+
+    course_info_db_path = os.path.join(MAIN_DIRECTORY, course['course_name'].replace(' ', '_'), f"{course['course_name'].replace(' ', '_')}_info.db")
+    with sqlite3.connect(course_info_db_path) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM course_info''')
+        course_info = cursor.fetchone()
+        course_info_tree.insert("", "end", values=("Exam Weight", course_info[2]))
+        course_info_tree.insert("", "end", values=("Project Weight", course_info[3]))
+        course_info_tree.insert("", "end", values=("Quiz Weight", course_info[4]))
+        course_info_tree.insert("", "end", values=("Homework Weight", course_info[5]))
+        course_info_tree.insert("", "end", values=("Assignment Weight", course_info[6]))
+
+    back_button = ttk.Button(course_info_window, text="Back", command=course_info_window.destroy, style='TButton')
+    back_button.pack()
+
+
 
 def create_add_assignment_popup(course):
     popup = tk.Toplevel()
@@ -171,10 +199,10 @@ def create_add_assignment_popup(course):
 
         popup.destroy()
 
-    submit_button = tk.Button(popup, text="Submit", command=submit_assignment)
+    submit_button = ttk.Button(popup, text="Submit", command=submit_assignment, style='TButton')
     submit_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
 
-    back_button = tk.Button(popup, text="Back", command=popup.destroy)
+    back_button = ttk.Button(popup, text="Back", command=popup.destroy, style='TButton')
     back_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
 def view_assignments(course):
@@ -196,13 +224,13 @@ def view_assignments(course):
 
     assignments_db.close()
 
-    edit_button = tk.Button(assignments_window, text="Edit", command=lambda: edit_assignment(course, assignments_tree))
+    edit_button = ttk.Button(assignments_window, text="Edit", command=lambda: edit_assignment(course, assignments_tree), style='TButton')
     edit_button.pack()
 
-    delete_button = tk.Button(assignments_window, text="Delete", command=lambda: delete_assignment(course, assignments_tree))
+    delete_button = ttk.Button(assignments_window, text="Delete", command=lambda: delete_assignment(course, assignments_tree), style='TButton')
     delete_button.pack()
 
-    back_button = tk.Button(assignments_window, text="Back", command=assignments_window.destroy)
+    back_button = ttk.Button(assignments_window, text="Back", command=assignments_window.destroy, style='TButton')
     back_button.pack()
 
 def edit_assignment(course, assignments_tree):
@@ -242,10 +270,10 @@ def edit_assignment(course, assignments_tree):
         popup.destroy()
         view_assignments(course)
 
-    submit_button = tk.Button(popup, text="Submit", command=submit_edit)
+    submit_button = ttk.Button(popup, text="Submit", command=submit_edit, style='TButton')
     submit_button.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
 
-    back_button = tk.Button(popup, text="Back", command=popup.destroy)
+    back_button = ttk.Button(popup, text="Back", command=popup.destroy, style='TButton')
     back_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
 
 def delete_assignment(course, assignments_tree):
@@ -277,10 +305,15 @@ def calculate_grade(course):
 root = tk.Tk()
 root.title("Grade Calculator Application")
 root.geometry("500x500")
+root.configure(bg='#009E60')
+
+style = ttk.Style()
+style.configure('TButton', relief=tk.RAISED, borderwidth=.75, foreground='black', background='black', font=('Arial', 13), anchor='center', borderradius=10)
+style.map('TButton', background=[('active', '!disabled', 'black')], bordercolor=[('active', 'black')])
 
 update_main_menu()
 
-button = tk.Button(root, text="Add Course", command=on_button_click)
+button = ttk.Button(root, text="Add Course", command=on_button_click, style='TButton')
 button.grid(row=0, column=0, padx=10, pady=5)
 
 root.mainloop()
