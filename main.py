@@ -3,7 +3,7 @@ from tkinter import ttk
 import tkinter.messagebox as messagebox
 import os
 import sqlite3
-from grade_calculator import calculate_exact_grade
+from calculations import calculate_exact_grade
 
 courses = []
 MAIN_DIRECTORY = "COURSES"
@@ -161,12 +161,35 @@ def create_add_course_popup():
     back_button.grid(row=7, column=0, columnspan=2, padx=10, pady=10)
 
 def update_main_menu():
-    for i, course in enumerate(courses):
-        frame = tk.Frame(root)
-        frame.grid(row=i+1, column=0, padx=10, pady=5)
+    root = tk.Tk()
+    root.title("Grade Calculator Application")
+    root.geometry("500x500")
+    root.configure(bg='#009E60')
 
-        course_button = ttk.Button(frame, text=course["course_name"], command=lambda c=course: on_course_button_click(root, c), style='TButton')
-        course_button.grid(row=0, column=0)
+    style = ttk.Style()
+    style.configure('TButton', relief=tk.RAISED, borderwidth=.75, foreground='black', background='black', font=('Arial', 13), anchor='center', borderradius=10)
+    style.map('TButton', background=[('active', '!disabled', 'black')], bordercolor=[('active', 'black')])
+
+    # Clear previous main menu
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Calculate center position
+    window_width = root.winfo_reqwidth()
+    window_height = root.winfo_reqheight()
+    position_right = int(root.winfo_screenwidth()/2 - window_width/2)
+    position_down = int(root.winfo_screenheight()/2 - window_height/2)
+    root.geometry("+{}+{}".format(position_right, position_down))
+
+    # Add course buttons
+    for i, course in enumerate(courses):
+        course_button = ttk.Button(root, text=course["course_name"], command=lambda c=course: on_course_button_click(root, c), style='TButton')
+        course_button.pack(pady=5)
+
+    button = ttk.Button(root, text="Add Course", command=on_button_click, style='TButton')
+    button.pack(pady=10)
+
+    root.mainloop()
 
 def on_course_button_click(root, course):
     course_menu_window = tk.Toplevel(root)
@@ -206,8 +229,6 @@ def view_course_info(course):
 
     back_button = ttk.Button(course_info_window, text="Back", command=course_info_window.destroy, style='TButton')
     back_button.pack()
-
-
 
 def create_add_assignment_popup(course):
     popup = tk.Toplevel()
@@ -275,111 +296,55 @@ def view_assignments(course):
     assignments_window = tk.Toplevel()
     assignments_window.title(f"Assignments for {course['course_name']}")
 
-    assignments_tree = ttk.Treeview(assignments_window, columns=("Type", "Assignment Name", "Grade"), show="headings")
-    assignments_tree.heading("Type", text="Type")
-    assignments_tree.heading("Assignment Name", text="Assignment Name")
+    assignments_tree = ttk.Treeview(assignments_window, columns=("Name", "Grade"), show="headings")
+    assignments_tree.heading("Name", text="Name")
     assignments_tree.heading("Grade", text="Grade")
     assignments_tree.pack(fill=tk.BOTH, expand=True)
 
-    assignments_db = sqlite3.connect(os.path.join(MAIN_DIRECTORY, course['course_name'].replace(' ', '_'), f"{course['course_name'].replace(' ', '_')}_assignments.db"))
-    assignments_cursor = assignments_db.cursor()
-    assignments_cursor.execute('''SELECT * FROM assignments''')
-    assignments = assignments_cursor.fetchall()
-    for assignment in assignments:
-        assignments_tree.insert("", "end", values=(assignment[1], assignment[2], assignment[3]))
-
-    assignments_db.close()
-
-    edit_button = ttk.Button(assignments_window, text="Edit", command=lambda: edit_assignment(course, assignments_tree), style='TButton')
-    edit_button.pack()
-
-    delete_button = ttk.Button(assignments_window, text="Delete", command=lambda: delete_assignment(course, assignments_tree), style='TButton')
-    delete_button.pack()
+    assignments_db_path = os.path.join(MAIN_DIRECTORY, course['course_name'].replace(' ', '_'), f"{course['course_name'].replace(' ', '_')}_assignments.db")
+    with sqlite3.connect(assignments_db_path) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM assignments''')
+        assignments = cursor.fetchall()
+        for assignment in assignments:
+            assignments_tree.insert("", "end", values=(assignment[2], assignment[3]))
 
     back_button = ttk.Button(assignments_window, text="Back", command=assignments_window.destroy, style='TButton')
     back_button.pack()
 
-def edit_assignment(course, assignments_tree):
-    selected_item = assignments_tree.selection()[0]
-    assignment_name = assignments_tree.item(selected_item)['values'][1]
-    assignment_grade = assignments_tree.item(selected_item)['values'][2]
-
-    popup = tk.Toplevel()
-    popup.title("Edit Assignment")
-
-    assignment_name_label = tk.Label(popup, text="Assignment Name:")
-    assignment_name_label.grid(row=0, column=0, padx=10, pady=5)
-    assignment_name_entry = tk.Entry(popup)
-    assignment_name_entry.insert(0, assignment_name)
-    assignment_name_entry.grid(row=0, column=1, padx=10, pady=5)
-
-    grade_value_label = tk.Label(popup, text="Grade Value:")
-    grade_value_label.grid(row=1, column=0, padx=10, pady=5)
-    grade_value_entry = tk.Entry(popup)
-    grade_value_entry.insert(0, assignment_grade)
-    grade_value_entry.grid(row=1, column=1, padx=10, pady=5)
-
-    def submit_edit():
-        new_assignment_name = assignment_name_entry.get()
-        new_assignment_grade = grade_value_entry.get()
-
-        assignments_db = sqlite3.connect(os.path.join(MAIN_DIRECTORY, course['course_name'].replace(' ', '_'), f"{course['course_name'].replace(' ', '_')}_assignments.db"))
-        assignments_cursor = assignments_db.cursor()
-        assignments_cursor.execute('''UPDATE assignments
-                                     SET assignment_name = ?,
-                                         assignment_grade = ?
-                                     WHERE assignment_name = ?''',
-                                     (new_assignment_name, new_assignment_grade, assignment_name))
-        assignments_db.commit()
-        assignments_db.close()
-
-        popup.destroy()
-        view_assignments(course)
-
-    submit_button = ttk.Button(popup, text="Submit", command=submit_edit, style='TButton')
-    submit_button.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
-
-    back_button = ttk.Button(popup, text="Back", command=popup.destroy, style='TButton')
-    back_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
-
-def delete_assignment(course, assignments_tree):
-    selected_items = assignments_tree.selection()
-    if not selected_items:
-        messagebox.showerror("Error", "Please select an assignment to delete.")
-        return
-
-    confirm_delete = messagebox.askyesno("Confirmation", "Are you sure you want to delete the selected assignment?")
-    if not confirm_delete:
-        return
-
-    for item in selected_items:
-        assignment_name = assignments_tree.item(item)['values'][1]
-
-        assignments_db = sqlite3.connect(os.path.join(MAIN_DIRECTORY, course['course_name'].replace(' ', '_'), f"{course['course_name'].replace(' ', '_')}_assignments.db"))
-        assignments_cursor = assignments_db.cursor()
-        assignments_cursor.execute('''DELETE FROM assignments WHERE assignment_name = ?''', (assignment_name,))
-        assignments_db.commit()
-        assignments_db.close()
-
-        assignments_tree.delete(item)
-
 def calculate_grade(course):
-    exact_grade = calculate_exact_grade(course['course_name'])
+    course_directory = os.path.join(MAIN_DIRECTORY, course['course_name'].replace(' ', '_'))
+    course_info_db_path = os.path.join(course_directory, f"{course['course_name'].replace(' ', '_')}_info.db")
+    course_assignments_db_path = os.path.join(course_directory, f"{course['course_name'].replace(' ', '_')}_assignments.db")
+
+    if not os.path.exists(course_info_db_path):
+        messagebox.showerror("Error", "No course information found.")
+        return
+
+    if not os.path.exists(course_assignments_db_path):
+        messagebox.showerror("Error", "No assignments found.")
+        return
+
+    with sqlite3.connect(course_info_db_path) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM course_info''')
+        course_info = cursor.fetchone()
+
+    with sqlite3.connect(course_assignments_db_path) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM assignments''')
+        assignments = cursor.fetchall()
+
+    total_grade = 0
+    total_weight = 0
+
+    for assignment in assignments:
+        total_weight += float(course_info[2 + ['Exam', 'Project', 'Quiz', 'Homework', 'Assignment'].index(assignment[1])])
+        total_grade += float(assignment[2]) * float(course_info[2 + ['Exam', 'Project', 'Quiz', 'Homework', 'Assignment'].index(assignment[1])]) / 100
+
+    exact_grade = calculate_exact_grade(total_grade, total_weight)
     letter_grade = calculate_letter_grade(exact_grade)
-    messagebox.showinfo("Grade Information", f"Exact Grade: {exact_grade:.2f}\nLetter Grade: {letter_grade}")
 
-root = tk.Tk()
-root.title("Grade Calculator Application")
-root.geometry("500x500")
-root.configure(bg='#009E60')
-
-style = ttk.Style()
-style.configure('TButton', relief=tk.RAISED, borderwidth=.75, foreground='black', background='black', font=('Arial', 13), anchor='center', borderradius=10)
-style.map('TButton', background=[('active', '!disabled', 'black')], bordercolor=[('active', 'black')])
+    messagebox.showinfo("Grade", f"Exact Grade: {exact_grade}\nLetter Grade: {letter_grade}")
 
 update_main_menu()
-
-button = ttk.Button(root, text="Add Course", command=on_button_click, style='TButton')
-button.grid(row=0, column=0, padx=10, pady=5)
-
-root.mainloop()
