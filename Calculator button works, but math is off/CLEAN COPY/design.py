@@ -63,36 +63,71 @@ class AddCoursePopup(tk.Toplevel):
         self.course_name_entry = tk.Entry(self, font=("Arial", 12))
         self.course_name_entry.grid(row=0, column=1)
 
+        # Add required indicator (*)
+        self.course_name_label_required = tk.Label(self, text="*", bg="#50C878", fg="red", font=("Arial", 12))
+        self.course_name_label_required.grid(row=0, column=2, sticky="w")
+
         self.exam_weight_label = tk.Label(self, text="Exam Weight (Ex: 40%):", bg="#50C878", fg="white", font=("Arial", 12))
         self.exam_weight_label.grid(row=1, column=0, sticky="w")
         self.exam_weight_entry = tk.Entry(self, font=("Arial", 12))
         self.exam_weight_entry.grid(row=1, column=1)
+
+        # Add required indicator (*) and set validation
+        self.exam_weight_label_required = tk.Label(self, text="*", bg="#50C878", fg="red", font=("Arial", 12))
+        self.exam_weight_label_required.grid(row=1, column=2, sticky="w")
+        self.exam_weight_entry.config(validate="key", validatecommand=(self.register(self.validate_integer), "%P"))
 
         self.project_weight_label = tk.Label(self, text="Project Weight (Ex: 20%):", bg="#50C878", fg="white", font=("Arial", 12))
         self.project_weight_label.grid(row=2, column=0, sticky="w")
         self.project_weight_entry = tk.Entry(self, font=("Arial", 12))
         self.project_weight_entry.grid(row=2, column=1)
 
+        # Add required indicator (*) and set validation
+        self.project_weight_label_required = tk.Label(self, text="*", bg="#50C878", fg="red", font=("Arial", 12))
+        self.project_weight_label_required.grid(row=2, column=2, sticky="w")
+        self.project_weight_entry.config(validate="key", validatecommand=(self.register(self.validate_integer), "%P"))
+
+        # Repeat similar steps for other fields
         self.homework_weight_label = tk.Label(self, text="Homework Weight (Ex: 10%):", bg="#50C878", fg="white", font=("Arial", 12))
         self.homework_weight_label.grid(row=3, column=0, sticky="w")
         self.homework_weight_entry = tk.Entry(self, font=("Arial", 12))
         self.homework_weight_entry.grid(row=3, column=1)
+
+        self.homework_weight_label_required = tk.Label(self, text="*", bg="#50C878", fg="red", font=("Arial", 12))
+        self.homework_weight_label_required.grid(row=3, column=2, sticky="w")
+        self.homework_weight_entry.config(validate="key", validatecommand=(self.register(self.validate_integer), "%P"))
 
         self.quiz_weight_label = tk.Label(self, text="Quiz Weight (Ex: 10%):", bg="#50C878", fg="white", font=("Arial", 12))
         self.quiz_weight_label.grid(row=4, column=0, sticky="w")
         self.quiz_weight_entry = tk.Entry(self, font=("Arial", 12))
         self.quiz_weight_entry.grid(row=4, column=1)
 
+        self.quiz_weight_label_required = tk.Label(self, text="*", bg="#50C878", fg="red", font=("Arial", 12))
+        self.quiz_weight_label_required.grid(row=4, column=2, sticky="w")
+        self.quiz_weight_entry.config(validate="key", validatecommand=(self.register(self.validate_integer), "%P"))
+
         self.assignment_weight_label = tk.Label(self, text="Assignment Weight (Ex: 10%):", bg="#50C878", fg="white", font=("Arial", 12))
         self.assignment_weight_label.grid(row=5, column=0, sticky="w")
         self.assignment_weight_entry = tk.Entry(self, font=("Arial", 12))
         self.assignment_weight_entry.grid(row=5, column=1)
 
-        self.back_button = tk.Button(self, text="Back", command=self.destroy, fg="black", font=("Arial", 12), padx=10, pady=5, borderwidth=1, relief="solid", highlightbackground="black", highlightthickness=1)
+        self.assignment_weight_label_required = tk.Label(self, text="*", bg="#50C878", fg="red", font=("Arial", 12))
+        self.assignment_weight_label_required.grid(row=5, column=2, sticky="w")
+        self.assignment_weight_entry.config(validate="key", validatecommand=(self.register(self.validate_integer), "%P"))
+
+        self.back_button = tk.Button(self, text="Back", command=self.destroy, fg="black", font=("Arial", 12), padx=10, pady=5, borderwidth=1, relief="solid", highlightbackground="white", highlightthickness=1)
         self.back_button.grid(row=6, column=0, pady=10)
 
-        self.submit_button = tk.Button(self, text="Submit", command=self.submit_data, fg="black", font=("Arial", 12), padx=10, pady=5, borderwidth=1, relief="solid", highlightbackground="black", highlightthickness=1)
+        self.submit_button = tk.Button(self, text="Submit", command=self.submit_data, fg="black", font=("Arial", 12), padx=10, pady=5, borderwidth=1, relief="solid", highlightbackground="white", highlightthickness=1)
         self.submit_button.grid(row=6, column=1, pady=10)
+
+    def validate_integer(self, value):
+        try:
+            if value:
+                int(value)
+            return True
+        except ValueError:
+            return False
 
     def submit_data(self):
         course_name = self.course_name_entry.get()

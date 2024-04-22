@@ -35,23 +35,72 @@ def calculate_course_grade(course_name, course_directory):
 
     # Calculate weighted grades for each assignment and sum them up
     total_weighted_grade = 0
+    exam_avg = 0
+    exam_num = 0
+    assignment_avg = 0
+    assignment_num = 0
+    homework_avg = 0
+    homework_num = 0
+    quiz_avg = 0
+    quiz_num = 0
+    project_avg = 0
+    project_num = 0
     for assignment in assignments:
         assignment_name, assignment_type, assignment_grade = assignment
         if assignment_type == "Exam":
-            weighted_grade = float(assignment_grade) * (exam_weight / 100)
+            exam_avg += assignment_grade
+            exam_num += 1
+            # weighted_grade = float(assignment_grade) * (exam_weight / 100)
         elif assignment_type == "Project":
-            weighted_grade = float(assignment_grade) * (project_weight / 100)
+            project_avg += assignment_grade
+            project_num += 1
+            # weighted_grade = float(assignment_grade) * (project_weight / 100)
         elif assignment_type == "Homework":
-            weighted_grade = float(assignment_grade) * (homework_weight / 100)
+            homework_avg += assignment_grade
+            homework_num += 1
+            # weighted_grade = float(assignment_grade) * (homework_weight / 100)
         elif assignment_type == "Quiz":
-            weighted_grade = float(assignment_grade) * (quiz_weight / 100)
-        elif assignment_type == "Assignment":
-            weighted_grade = float(assignment_grade) * (assignment_weight / 100)
-        else:
-            weighted_grade = 0
-        
-        total_weighted_grade += weighted_grade
+            quiz_avg += assignment_grade
+            quiz_num += 1
+            # weighted_grade = float(assignment_grade) * (quiz_weight / 100)
+        elif assignment_type == "Other":
+            assignment_avg += assignment_grade
+            assignment_num += 1
+            # weighted_grade = float(assignment_grade) * (assignment_weight / 100)
 
+    # Calculate class average, make sure there is no division by zero
+    # Calculate exam avgerage
+    if exam_num != 0:
+        exam_avg /= exam_num
+    else:
+        exam_avg = 0
+
+    # Calculate quiz avgerage
+    if quiz_num != 0:
+        quiz_avg /= quiz_num
+    else:
+        quiz_avg = 0
+
+    # Calculate homework avgerage
+    if homework_num != 0:
+        homework_avg /= homework_num
+    else:
+        homework_avg = 0
+
+    # Calculate project avgerage
+    if project_num != 0:
+        project_avg /= project_num
+    else:
+        project_avg = 0
+
+    # Calculate assignment avgerage
+    if assignment_num != 0:
+        assignment_avg /= assignment_num
+    else:
+        assignment_avg = 0
+    
+    total_weighted_grade = exam_avg * (exam_weight / 100) + quiz_avg * (quiz_weight / 100) + homework_avg * (homework_weight / 100) + project_avg * (project_weight / 100) + assignment_avg * (assignment_weight / 100)
+    
     # Close database connections
     course_info_db.close()
     course_assignments_db.close()
